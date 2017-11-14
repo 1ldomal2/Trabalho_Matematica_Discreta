@@ -97,7 +97,6 @@ int** Preenche_Matriz(int **Matriz, int Tamanho_Matriz, FILE *Leitura){
 	return Matriz;
 }
 Bool Verifica_Reflexivo(int **Matriz, int Tamanho_Matriz, FILE *Leitura){
-	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//
 	//Função para a verificar se a relação possui o fecho reflexivo
@@ -159,6 +158,110 @@ Bool Verifica_Simetrico(int **Matriz, int Tamanho_Matriz, FILE *Leitura){
 		return false;
 	}
 }
+
+Bool Verifica_Transitivo(int **Matriz, int Tamanho_Matriz, FILE *Leitura){
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	//Função para verificar se a relação possui o fecho transitivo
+	//Obs: Recebe por parametro, ponteiro, número de nós, e ponteiro do arquivo que foi lido
+	//
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	//variaveis que serão necessárias para o uso do programa
+	int conta_relacoes = 0;
+	int controle = 0;
+	//serão utilizados dois for's para verificar a ida da matriz e a volta, para as linhas e colunas
+	for(int i = 0; i < Tamanho_Matriz; ++i){
+		for(int j = 0; j < Tamanho_Matriz; ++j){
+			if(Matriz[i][j] == 1){
+				conta_relacoes++;
+			}
+			for(int k = 0; k < Tamanho_Matriz; ++k){
+				if(Matriz[i][j] == 1 && Matriz[j][k] == 1 && Matriz[i][k] == 0){
+					//se houver, aumenta o valor do controle
+					controle++;
+					return false;
+					//Se matriz houver fecho de i pra j e de j pra k  e nao houver de i para k
+					//indica que não possui a propriedade reflexiva
+				}
+			}
+		}
+	}
+	//no fim da função, verifica se os valores de controle são um diferente de 0, e o outro igual a 0
+	if(conta_relacoes != 0 && controle == 0){
+		//retorna true
+		return true;
+	//senão 
+	}else{
+		//retorna false;
+		return false;
+	}
+}
+void Gera_Arquivo_Dot(int **Matriz, int Tamanho_Matriz, char Url[999]){
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	//Função para Gerar arquivo Dot de todos os Fechos (Transitivo, Reflexivo, Simetrico)
+	//Obs: Recebe por parametro, ponteiro, número de nós, e Url com o caminho que sera gerado o arquivo
+	//
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	FILE *Arquivo;
+	Arquivo = fopen(Url,"w");
+	if(Arquivo == NULL){//Caso ocorra algum erro ao abrir o arquivo ponteiro volta como NULL
+		printf("Erro ao abrir arquivo para criar Fecho");//Mostra que teve erro ao criar o arquivo com Fecho
+	}else{//Se nao
+		fprintf(Arquivo,"digraph fecho\n{\n");
+		//printa cabeçalho do arquivo DOT
+		for(int i = 0; i < Tamanho_Matriz; i++){
+			fprintf(Arquivo,"\t%d;\n", i+1);
+		}
+		//Cria FOR ate tamanho da Matriz e printa no arquivo a quantidade de NOS que foi passada no arquivo
+		for(int i = 0; i < Tamanho_Matriz; i++){
+			for(int j = 0; j < Tamanho_Matriz; j++){
+				//For para varrer a matriz em linhas colunas da matriz
+				if(Matriz[i][j] == 1){
+					//Caso ocorra ligacao entre nos na matriz
+					fprintf(Arquivo,"\t%d -> %d;\n", i+1, j+1);
+					//printa no arquivo de onde para onde esta a relacao
+				}
+			}
+		}
+		for(int i = 0; i < Tamanho_Matriz; i++){
+			for(int j = 0; j < Tamanho_Matriz; j++){
+				//FOR para varrer a matriz em linhas e colunas
+				if(Matriz[i][j] == 2){
+					//Caso tenha ligacao indicada com 2 na matriz indica que houve alteracao no arquivo criando o Fecho
+					fprintf(Arquivo,"\t%d -> %d [color=red];\n", i+1, j+1);
+					//Printa no arquivo com padrao que irá utilizar cor vermelha na ligacao
+				}
+			}
+		}
+		fprintf(Arquivo,"}");
+		//Apos o terminar de printar todas as ligacoes, fecha a chave indicando que acabou o arquivo DOT
+	}
+}
+int Calcula_Fecho_Reflexivo(int **Matriz, int Tamanho_Matriz, FILE *Leitura){
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	//Função para calcular o fecho reflexivo
+	//Obs: Recebe por parametro, ponteiro da matriz, número de nos, e ponteiro do arquivo de leitura
+	//
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	//usamos um for para varrer a matriz, na sua diagonal principal e verificar se todos os campos dessa diagonal
+	//os valores igual a 1
+	for (int i = 0; i < Tamanho_Matriz; ++i)
+	{	
+		//se houver algum valor que seja diferente de 1, no caso especifico, valor 0, a função retorna o valor false
+		if (Matriz[i][i] != 1)
+		{	
+			Matriz[i][i] = 2;
+		}
+	}
+	//caso esteja tudo de acordo com as regras do fecho reflexivo, retorna true
+	return true;
+
+}
+
 int main(int argc, char const *argv[])
 {
 	FILE *Arquivo_Leitura,*Arquivo_Escrita;
@@ -191,6 +294,14 @@ int main(int argc, char const *argv[])
 		//verifica a simetria da relação
 		if(Verifica_Simetrico(Matriz,Tamanho_Matriz,Arquivo_Leitura) == true){
 			printf("\nO arquivo de entrada possui a propriedade simétrica!\n");
+		}
+		else{
+			//calcula o fecho
+			printf("Nao funcionou");
+		}
+		//verifica a simetria da relação
+		if(Verifica_Transitivo(Matriz,Tamanho_Matriz,Arquivo_Leitura) == true){
+			printf("\nO arquivo de entrada possui a propriedade transitiva!\n");
 		}
 		else{
 			//calcula o fecho
