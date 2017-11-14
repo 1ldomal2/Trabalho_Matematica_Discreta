@@ -1,6 +1,6 @@
 all: Apagar Compilar Pausa Executar
 	echo "Fim"
-Executar:Exe
+Executar:Exe Nos Saida
 	./Exe
 Compilar:main.c
 	gcc main.c -o Exe
