@@ -12,12 +12,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #define DEBUG(TEXTO) printf("\n%s%s \t Linha = %d \t %s%s\n","\33[1;31m",__FILE__, __LINE__,TEXTO,"\33[0;29m");//scanf("%d",&Bug)
 #define DEBUGINT(TEXTO,INT) printf("\n%s%s \t Linha = %d \t %s%d%s\n","\33[1;32m",__FILE__,__LINE__,TEXTO,INT,"\33[0;29m");//scanf("%d",&Bug)
 int Bug;
 #define PAUSA 	scanf("%d",&Bug);
 enum Boolean{true = 1, false =0};
 typedef enum Boolean Bool; 
+
 int Pega_Nos(FILE *Leitura){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -260,6 +262,78 @@ void Calcula_Fecho_Reflexivo(int **Matriz, int Tamanho_Matriz, FILE *Leitura){
 	}
 
 }
+	
+void Calcula_Fecho_Simetrico(int **Matriz, int Tamanho_Matriz, FILE *Leitura){
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	//Função para calcular o fecho simetrico
+	//Obs: Recebe por parametro, ponteiro da matriz, número de nos, e ponteiro do arquivo de leitura
+	//
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//usamos dois for para varrer a matriz
+	for(int i = 0; i < Tamanho_Matriz; i++){
+		for(int j = 0; j < Tamanho_Matriz; j++){
+			//verifica se o valor da posição i e diferente da posição j e o contrario também
+			if(Matriz[i][j] != Matriz[j][i]){
+				//atribui valor 2 para os valores que são o fecho
+				if(Matriz[i][j] == 0 && Matriz[j][i] == 1){
+					Matriz[i][j] = 2;
+				}
+				else if(Matriz[i][j] == 1 && Matriz[j][i] == 0){
+					Matriz[j][i] = 2;
+				}
+			}
+		}
+	}
+}
+
+void Calcula_Fecho_Transitivo(int **Matriz, int Tamanho_Matriz, FILE *Leitura){
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	//Função para calcular o fecho transitivo
+	//Obs: Recebe por parametro, ponteiro da matriz, número de nos, e ponteiro do arquivo de leitura
+	//
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	Bool Verifica;
+	do{
+	 	Verifica = true;
+		for(int i = 0; i < Tamanho_Matriz; i++){
+			for(int j = 0; j < Tamanho_Matriz; j++){
+				for(int k = 0; k < Tamanho_Matriz; k++){
+					//sao usado 3 for para as verificacoes do fecho transitivo
+					if(Matriz[i][j] == 1 && Matriz[j][k] == 1 && Matriz[i][k] == 0){
+						//Verifica se há relacao de i com j e j com k mas nao nao há i com k
+						Matriz[i][k] = 2;
+						//Atribui valor 2 que é valor do fecho
+						Verifica = false;
+						//Valor do verifica recebe falso indicando que loop tem que ser rodado novamente
+					}else if(Matriz[i][j] == 2 && Matriz[j][k] == 2 && Matriz[i][k] ==0){
+						//Verifica se há relacao de i com j e j com k mas nao nao há i com k
+						Matriz[i][k] = 2;
+						//Atribui valor 2 que é valor do fecho
+						Verifica = false;
+						//Valor do verifica recebe falso indicando que loop tem que ser rodado novamente
+					}
+					else if(Matriz[i][j] == 1 && Matriz[j][k] == 2 && Matriz[i][k] ==0){
+						//Verifica se há relacao de i com j e j com k mas nao nao há i com k
+						Matriz[i][k] = 2;
+						//Atribui valor 2 que é valor do fecho
+						Verifica = false;
+						//Valor do verifica recebe falso indicando que loop tem que ser rodado novamente
+					}
+					else if(Matriz[i][j] == 2 && Matriz[j][k] == 1 && Matriz[i][k] ==0){
+						//Verifica se há relacao de i com j e j com k mas nao nao há i com k
+						Matriz[i][k] = 2;
+						//Atribui valor 2 que é valor do fecho
+						Verifica = false;
+						//Valor do verifica recebe falso indicando que loop tem que ser rodado novamente
+					}
+				}	
+			}
+		}
+	}while(Verifica == false);
+	//Loop que repete enquanto valor do verifica continua com falso
+}
 
 int main(int argc, char const *argv[])
 {
@@ -296,9 +370,7 @@ int main(int argc, char const *argv[])
 			for(int i = 0; i < Tamanho_Matriz; i++){
 				for(int j = 0; j < Tamanho_Matriz; j++){
 					Matriz_Reflexiva[i][j] = Matriz[i][j];
-					printf("%d ", Matriz_Reflexiva[i][j]);
 				}
-				printf("\n");
 			}
 			//primeiro verifica se a função para verificar o fecho reflexivo retornou tr
 			Calcula_Fecho_Reflexivo(Matriz_Reflexiva, Tamanho_Matriz, Arquivo_Leitura);
@@ -311,16 +383,47 @@ int main(int argc, char const *argv[])
 			printf("\nO arquivo de entrada possui a propriedade simétrica!\n");
 		}
 		else{
+			int **Matriz_Simetrica;
+			char URL[999];
+			strcpy(URL,argv[2]);
+			strcat(URL, "_Simetrica.dot");
+			//Cria ponteiro para ponteiro(Matriz)
+			Matriz_Simetrica = (int**)Preenche_Matriz(Matriz_Simetrica,Tamanho_Matriz,Arquivo_Leitura);
+			for(int i = 0; i < Tamanho_Matriz; i++){
+				for(int j = 0; j < Tamanho_Matriz; j++){
+					Matriz_Simetrica[i][j] = Matriz[i][j];
+				}
+			}
 			//calcula o fecho
-			printf("Nao funcionou");
+			//primeiro verifica se a função para verificar o fecho reflexivo retornou tr
+			Calcula_Fecho_Simetrico(Matriz_Simetrica, Tamanho_Matriz, Arquivo_Leitura);
+			//Chama funcao para gerar fecho reflexivo na matriz reflexiva
+			Gera_Arquivo_Dot(Matriz_Simetrica, Tamanho_Matriz, URL);
+			//Gera o arquivo concatenado com seu respectivo fecho
+
 		}
 		//verifica a simetria da relação
 		if(Verifica_Transitivo(Matriz,Tamanho_Matriz,Arquivo_Leitura) == true){
 			printf("\nO arquivo de entrada possui a propriedade transitiva!\n");
 		}
 		else{
+			int **Matriz_Transitiva;
+			char URL[999];
+			strcpy(URL,argv[2]);
+			strcat(URL, "_Transitiva.dot");
+			//Cria ponteiro para ponteiro(Matriz)
+			Matriz_Transitiva = (int**)Preenche_Matriz(Matriz_Transitiva,Tamanho_Matriz,Arquivo_Leitura);
+			for(int i = 0; i < Tamanho_Matriz; i++){
+				for(int j = 0; j < Tamanho_Matriz; j++){
+					Matriz_Transitiva[i][j] = Matriz[i][j];
+				}
+			}
 			//calcula o fecho
-			printf("Nao funcionou");
+			//primeiro verifica se a função para verificar o fecho reflexivo retornou tr
+			Calcula_Fecho_Transitivo(Matriz_Transitiva, Tamanho_Matriz, Arquivo_Leitura);
+			//Chama funcao para gerar fecho reflexivo na matriz reflexiva
+			Gera_Arquivo_Dot(Matriz_Transitiva, Tamanho_Matriz, URL);
+			//Gera o arquivo concatenado com seu respectivo fecho
 		}
 	}else{
 		printf("\nFoi passado mais argumentos que o necessario porfavor  re abra a aplicação\n");
