@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define DEBUG(TEXTO) printf("\n%s%s \t Linha = %d \t %s%s\n","\33[1;31m",__FILE__, __LINE__,TEXTO,"\33[0;29m");//scanf("%d",&Bug)
 #define DEBUGINT(TEXTO,INT) printf("\n%s%s \t Linha = %d \t %s%d%s\n","\33[1;32m",__FILE__,__LINE__,TEXTO,INT,"\33[0;29m");//scanf("%d",&Bug)
 int Bug;
@@ -239,7 +240,7 @@ void Gera_Arquivo_Dot(int **Matriz, int Tamanho_Matriz, char Url[999]){
 		//Apos o terminar de printar todas as ligacoes, fecha a chave indicando que acabou o arquivo DOT
 	}
 }
-int Calcula_Fecho_Reflexivo(int **Matriz, int Tamanho_Matriz, FILE *Leitura){
+void Calcula_Fecho_Reflexivo(int **Matriz, int Tamanho_Matriz, FILE *Leitura){
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//
 	//Função para calcular o fecho reflexivo
@@ -257,8 +258,6 @@ int Calcula_Fecho_Reflexivo(int **Matriz, int Tamanho_Matriz, FILE *Leitura){
 			Matriz[i][i] = 2;
 		}
 	}
-	//caso esteja tudo de acordo com as regras do fecho reflexivo, retorna true
-	return true;
 
 }
 
@@ -288,8 +287,24 @@ int main(int argc, char const *argv[])
 			printf("\nO arquivo de entrada possui a propriedade reflexiva!\n");
 		}
 		else{
-			//calcula o fecho
-			printf("Nao funcionou");
+			int **Matriz_Reflexiva;
+			char URL[999];
+			strcpy(URL,argv[2]);
+			strcat(URL, "_Reflexiva.dot");
+			//Cria ponteiro para ponteiro(Matriz)
+			Matriz_Reflexiva = (int**)Preenche_Matriz(Matriz_Reflexiva,Tamanho_Matriz,Arquivo_Leitura);
+			for(int i = 0; i < Tamanho_Matriz; i++){
+				for(int j = 0; j < Tamanho_Matriz; j++){
+					Matriz_Reflexiva[i][j] = Matriz[i][j];
+					printf("%d ", Matriz_Reflexiva[i][j]);
+				}
+				printf("\n");
+			}
+			//primeiro verifica se a função para verificar o fecho reflexivo retornou tr
+			Calcula_Fecho_Reflexivo(Matriz_Reflexiva, Tamanho_Matriz, Arquivo_Leitura);
+			//Chama funcao para gerar fecho reflexivo na matriz reflexiva
+			Gera_Arquivo_Dot(Matriz_Reflexiva, Tamanho_Matriz, URL);
+			//Gera o arquivo concatenado com seu respectivo fecho
 		}
 		//verifica a simetria da relação
 		if(Verifica_Simetrico(Matriz,Tamanho_Matriz,Arquivo_Leitura) == true){
