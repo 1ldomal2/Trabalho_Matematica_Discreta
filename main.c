@@ -350,92 +350,93 @@ int main(int argc, char const *argv[])
 			return 0;
 		}//Caso o Arquivo não exista
 		Tamanho_Matriz = Pega_Nos(Arquivo_Leitura);
-		//Chama funcao para pegar tamanho da matriz 
-		int **Matriz;
-		//Cria ponteiro para ponteiro(Matriz)
-		Matriz = (int**)Preenche_Matriz(Matriz,Tamanho_Matriz,Arquivo_Leitura);
-		//primeiro verifica se a função para verificar o fecho reflexivo retornou true
-		if(Verifica_Reflexivo(Matriz,Tamanho_Matriz,Arquivo_Leitura) == true)
-		{	
-			//se retornou true, mostra mensagem na tela
-			printf("\nO arquivo de entrada possui a propriedade reflexiva!\n");
-		}
-		else{
-			int **Matriz_Reflexiva;
-			char URL[999];
-			strcpy(URL,argv[2]);
-			strcat(URL, "_Reflexiva.dot");
-			//Cria ponteiro para ponteiro(Matriz)
-			Matriz_Reflexiva = (int**)Preenche_Matriz(Matriz_Reflexiva,Tamanho_Matriz,Arquivo_Leitura);
-			for(int i = 0; i < Tamanho_Matriz; i++){
-				for(int j = 0; j < Tamanho_Matriz; j++){
-					Matriz_Reflexiva[i][j] = Matriz[i][j];
+		//Chama funcao para pegar tamanho da matriz
+		//verifica se a quantidade de nos é maior que 0, se for realiza o processo, senão mostra mensagem de erro
+		if(Tamanho_Matriz > 0){
+				int **Matriz;
+				//Cria ponteiro para ponteiro(Matriz)
+				Matriz = (int**)Preenche_Matriz(Matriz,Tamanho_Matriz,Arquivo_Leitura);
+				//primeiro verifica se a função para verificar o fecho reflexivo retornou true
+				if(Verifica_Reflexivo(Matriz,Tamanho_Matriz,Arquivo_Leitura) == true)
+				{	
+					//se retornou true, mostra mensagem na tela
+					printf("\nO arquivo de entrada possui a propriedade reflexiva!\n");
 				}
-			}
-			//primeiro verifica se a função para verificar o fecho reflexivo retornou tr
-			Calcula_Fecho_Reflexivo(Matriz_Reflexiva, Tamanho_Matriz, Arquivo_Leitura);
-			//Chama funcao para gerar fecho reflexivo na matriz reflexiva
-			Gera_Arquivo_Dot(Matriz_Reflexiva, Tamanho_Matriz, URL);
-			//Gera o arquivo concatenado com seu respectivo fecho
-		}
-		//verifica a simetria da relação
-		if(Verifica_Simetrico(Matriz,Tamanho_Matriz,Arquivo_Leitura) == true){
-			printf("\nO arquivo de entrada possui a propriedade simétrica!\n");
-		}
-		else{
-			int **Matriz_Simetrica;
-			char URL[999];
-			strcpy(URL,argv[2]);
-			strcat(URL, "_Simetrica.dot");
-			//Cria ponteiro para ponteiro(Matriz)
-			Matriz_Simetrica = (int**)Preenche_Matriz(Matriz_Simetrica,Tamanho_Matriz,Arquivo_Leitura);
-			for(int i = 0; i < Tamanho_Matriz; i++){
-				for(int j = 0; j < Tamanho_Matriz; j++){
-					Matriz_Simetrica[i][j] = Matriz[i][j];
+				else{
+					int **Matriz_Reflexiva;
+					char URL[999];
+					strcpy(URL,argv[2]);
+					strcat(URL, "_Reflexiva.dot");
+					//Cria ponteiro para ponteiro(Matriz)
+					Matriz_Reflexiva = (int**)Preenche_Matriz(Matriz_Reflexiva,Tamanho_Matriz,Arquivo_Leitura);
+					for(int i = 0; i < Tamanho_Matriz; i++){
+						for(int j = 0; j < Tamanho_Matriz; j++){
+							Matriz_Reflexiva[i][j] = Matriz[i][j];
+						}
+					}
+					//primeiro verifica se a função para verificar o fecho reflexivo retornou tr
+					Calcula_Fecho_Reflexivo(Matriz_Reflexiva, Tamanho_Matriz, Arquivo_Leitura);
+					//Chama funcao para gerar fecho reflexivo na matriz reflexiva
+					Gera_Arquivo_Dot(Matriz_Reflexiva, Tamanho_Matriz, URL);
+					//Gera o arquivo concatenado com seu respectivo fecho
 				}
-			}
-			//calcula o fecho
-			//primeiro verifica se a função para verificar o fecho reflexivo retornou tr
-			Calcula_Fecho_Simetrico(Matriz_Simetrica, Tamanho_Matriz, Arquivo_Leitura);
-			//Chama funcao para gerar fecho reflexivo na matriz reflexiva
-			Gera_Arquivo_Dot(Matriz_Simetrica, Tamanho_Matriz, URL);
-			//Gera o arquivo concatenado com seu respectivo fecho
-
-		}
-		//verifica a simetria da relação
-		if(Verifica_Transitivo(Matriz,Tamanho_Matriz,Arquivo_Leitura) == true){
-			printf("\nO arquivo de entrada possui a propriedade transitiva!\n");
-		}
-		else{
-			int **Matriz_Transitiva;
-			char URL[999];
-			strcpy(URL,argv[2]);
-			strcat(URL, "_Transitiva.dot");
-			//Cria ponteiro para ponteiro(Matriz)
-			Matriz_Transitiva = (int**)Preenche_Matriz(Matriz_Transitiva,Tamanho_Matriz,Arquivo_Leitura);
-			for(int i = 0; i < Tamanho_Matriz; i++){
-				for(int j = 0; j < Tamanho_Matriz; j++){
-					Matriz_Transitiva[i][j] = Matriz[i][j];
+				//verifica a simetria da relação
+				if(Verifica_Simetrico(Matriz,Tamanho_Matriz,Arquivo_Leitura) == true){
+					printf("\nO arquivo de entrada possui a propriedade simétrica!\n");
 				}
+				else{
+					int **Matriz_Simetrica;
+					char URL[999];
+					strcpy(URL,argv[2]);
+					strcat(URL, "_Simetrica.dot");
+					//Cria ponteiro para ponteiro(Matriz)
+					Matriz_Simetrica = (int**)Preenche_Matriz(Matriz_Simetrica,Tamanho_Matriz,Arquivo_Leitura);
+					for(int i = 0; i < Tamanho_Matriz; i++){
+						for(int j = 0; j < Tamanho_Matriz; j++){
+							Matriz_Simetrica[i][j] = Matriz[i][j];
+						}
+					}
+					//calcula o fecho
+					//primeiro verifica se a função para verificar o fecho reflexivo retornou tr
+					Calcula_Fecho_Simetrico(Matriz_Simetrica, Tamanho_Matriz, Arquivo_Leitura);
+					//Chama funcao para gerar fecho reflexivo na matriz reflexiva
+					Gera_Arquivo_Dot(Matriz_Simetrica, Tamanho_Matriz, URL);
+					//Gera o arquivo concatenado com seu respectivo fecho
+
+				}
+				//verifica a simetria da relação
+				if(Verifica_Transitivo(Matriz,Tamanho_Matriz,Arquivo_Leitura) == true){
+					printf("\nO arquivo de entrada possui a propriedade transitiva!\n");
+				}
+				else{
+					int **Matriz_Transitiva;
+					char URL[999];
+					strcpy(URL,argv[2]);
+					strcat(URL, "_Transitiva.dot");
+					//Cria ponteiro para ponteiro(Matriz)
+					Matriz_Transitiva = (int**)Preenche_Matriz(Matriz_Transitiva,Tamanho_Matriz,Arquivo_Leitura);
+					for(int i = 0; i < Tamanho_Matriz; i++){
+						for(int j = 0; j < Tamanho_Matriz; j++){
+							Matriz_Transitiva[i][j] = Matriz[i][j];
+						}
+					}
+					//calcula o fecho
+					//primeiro verifica se a função para verificar o fecho reflexivo retornou tr
+					Calcula_Fecho_Transitivo(Matriz_Transitiva, Tamanho_Matriz, Arquivo_Leitura);
+					//Chama funcao para gerar fecho reflexivo na matriz reflexiva
+					Gera_Arquivo_Dot(Matriz_Transitiva, Tamanho_Matriz, URL);
+					//Gera o arquivo concatenado com seu respectivo fecho
+				}
+			}else{
+				printf("\nQuantidade de nós inválida!\n");
+				return 0;
+				//Passou mais argumentos que o necessário
 			}
-			//calcula o fecho
-			//primeiro verifica se a função para verificar o fecho reflexivo retornou tr
-			Calcula_Fecho_Transitivo(Matriz_Transitiva, Tamanho_Matriz, Arquivo_Leitura);
-			//Chama funcao para gerar fecho reflexivo na matriz reflexiva
-			Gera_Arquivo_Dot(Matriz_Transitiva, Tamanho_Matriz, URL);
-			//Gera o arquivo concatenado com seu respectivo fecho
+		}else{
+			printf("\nFoi passado uma quantidade diferente da esperada de argumentos, porfavor abra novamente a aplicação\n");
+			return 0;
+			
 		}
-	}else{
-		printf("\nFoi passado mais argumentos que o necessario porfavor  re abra a aplicação\n");
-		return 0;
-		//Passou mais argumentos que o necessário
-	}
-
-	
-
-
-
-
-
+		
 	return 1;
 }
